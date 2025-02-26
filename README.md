@@ -3,9 +3,9 @@
 Contact : Shreyan Hota (shreyanhota@gmail.com)
 
 # Files
-app_v2.py - Flask app, receives requests from Twilio API and handles the conversation flow, along with Dialogflow for NLU (intent recognition).
-responses_v2.json - Helper json for Twilio, defining agent reponses according to Dialogflow-recognized intents
-requirements.txt - Python packages to be installed
+- app_v2.py - Flask app, receives requests from Twilio API and handles the conversation flow, along with Dialogflow for NLU (intent recognition).
+- responses_v2.json - Helper json for Twilio, defining agent reponses according to Dialogflow-recognized intents
+- requirements.txt - Python packages to be installed
 
 ## Note : 
 - The frontend is deployed on a separate web service (https://wise-agent-frontend.onrender.com/). In case it is inaccessible, please drop a mail to shreyanhota@gmail.com or reach out to me at +91 9777256250 and I will respool the servers.
