@@ -3,8 +3,8 @@ from twilio.twiml.voice_response import VoiceResponse, Gather
 from datetime import datetime
 import json
 import os
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 
 # Import Dialogflow client library
 from google.cloud import dialogflow
