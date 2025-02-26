@@ -7,11 +7,9 @@ from google.cloud import dialogflow
 
 app = Flask(__name__)
 
-# Load static responses from JSON file
 with open('responses_v2.json') as f:
     responses = json.load(f)
 
-# Dialogflow settings
 DIALOGFLOW_PROJECT_ID = os.environ.get("DIALOGFLOW_PROJECT_ID", "your-dialogflow-project-id")
 DIALOGFLOW_LANGUAGE_CODE = 'en-US'
 creds_path = "/etc/secrets/service-account.json"
@@ -67,8 +65,7 @@ def handle_inquiry():
     else:
         reply = responses[intent]
         resp.say(reply, voice='alice', language='en-US')
-    
-    # Store the last response for possible repetition later.
+
     gather = Gather(input="speech", action="/handle_feedback", method="POST", timeout=5)
     gather.params = {"LastResponse": reply}
     resp.append(gather)
@@ -88,8 +85,7 @@ def handle_feedback():
     session_id = request.values.get("CallSid", "default_session")
     query_result = detect_intent_texts(session_id, feedback)
     intent = query_result.intent.display_name.lower() if query_result.intent.display_name else ""
-    
-    # List of FAQ intents
+
     faq_intents = [
         "check_transfer_status", 
         "money_arrival", 
@@ -99,16 +95,12 @@ def handle_feedback():
         "banking_partner_reference",
         "check_options"
     ]
-    
-    # If the feedback intent is one of the FAQ intents, redirect to inquiry handler.
+
     if intent in faq_intents:
-        # Overwrite the SpeechResult parameter with the current feedback
-        # so that handle_inquiry processes this as a new inquiry.
         request.values = request.values.copy()
         request.values["SpeechResult"] = feedback
         return handle_inquiry()
-    
-    # Otherwise, handle feedback intents.
+
     if intent == "satisfied":
         resp.say(responses.get("satisfied"), voice='alice', language='en-US')
         resp.hangup()
