@@ -14,7 +14,7 @@ auth_token = os.getenv("TWILIO_AUTH_TOKEN")
 client = Client(account_sid, auth_token)
 
 call = client.calls.create(
-  url="http://demo.twilio.com/docs/voice.xml",
+  url="https://wise-agent.onrender.com/voice",
   to="+919777256250",
   from_="+19895192066"
 )
