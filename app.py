@@ -19,15 +19,8 @@ with open('responses.json') as f:
 DIALOGFLOW_PROJECT_ID = os.environ.get("DIALOGFLOW_PROJECT_ID", "your-dialogflow-project-id")
 DIALOGFLOW_LANGUAGE_CODE = 'en-US'
 
-import os
-import json
-
-creds_json = os.getenv("GOOGLE_CREDENTIALS_JSON")
-if creds_json:
-    creds_path = "/etc/secrets/service-account.json"
-    with open(creds_path, "w") as f:
-        f.write(creds_json)
-    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = creds_path
+creds_path = "/etc/secrets/service-account.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = creds_path
 
 
 def detect_intent_texts(session_id, text, language_code=DIALOGFLOW_LANGUAGE_CODE):
