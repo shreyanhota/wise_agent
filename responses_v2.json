@@ -1,0 +1,12 @@
+{
+    "check_transfer_status": "Log into your Wise account and click 'Details' on your transfer to view its status.",
+    "money_arrival": "Wise provides an estimated arrival time when you initiate a transfer. If your money doesn't arrive by the expected time, it could be due to processing delays, bank holidays, incorrect recipient details, or currency conversion issues. You can also download a PDF receipt from your account for more details.",
+    "transfer_complete_but_money_pending": "Transfers are marked complete once Wise has sent the money to the recipient's bank, but additional processing time at the bank may delay the arrival of funds.",
+    "transfer_delay_reasons": "Delays may occur due to extra verification checks, bank processing times, the payment method used, or required security checks.",
+    "proof_of_payment": "A proof of payment is a receipt showing your transaction details, including your name, account number, transfer date, amount, currency, and reference number. Check your email or Wise account for this document.",
+    "banking_partner_reference": "It is a reference number provided to track your transfer when processed through a local banking partner, helping to identify and trace your transaction.",
+    "followup": "Could you please tell me more, or would you like to speak with a human agent?",
+    "satisfied": "I'm glad I could help! Thank you for calling Wise. Have a wonderful day!",
+    "unclear": "I'm sorry, I didn't quite catch that. Could you please repeat or clarify?"
+  }
+  
