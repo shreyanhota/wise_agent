@@ -10,7 +10,7 @@ app = Flask(__name__)
 with open('responses_v2.json') as f:
     responses = json.load(f)
 
-DIALOGFLOW_PROJECT_ID = os.environ.get("DIALOGFLOW_PROJECT_ID", "your-dialogflow-project-id")
+DIALOGFLOW_PROJECT_ID = os.environ.get("DIALOGFLOW_PROJECT_ID")
 DIALOGFLOW_LANGUAGE_CODE = 'en-US'
 creds_path = "/etc/secrets/service-account.json"
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = creds_path
@@ -25,9 +25,6 @@ def detect_intent_texts(session_id, text, language_code=DIALOGFLOW_LANGUAGE_CODE
 
 @app.route("/voice", methods=['GET', 'POST'])
 def voice():
-    """
-    [Start] and [Welcome & Query]
-    """
     resp = VoiceResponse()
     gather = Gather(input="speech", action="/handle_inquiry", method="POST", timeout=5)
     gather.say("Welcome to Wise Customer Support. How can I help you today? You can ask me for a list of options.", voice='alice', language='en-US')
@@ -37,12 +34,6 @@ def voice():
 
 @app.route("/handle_inquiry", methods=['GET', 'POST'])
 def handle_inquiry():
-    """
-    [User says Query] & [Identify FAQ Topic]
-    Uses Dialogflow to detect the intent of the inquiry. If the intent matches one
-    of the FAQ topics, responds with the corresponding answer from responses.json.
-    Otherwise, uses Dialogflow's fulfillment text as a fallback.
-    """
     resp = VoiceResponse()
     inquiry = request.values.get('SpeechResult', '').strip()
     session_id = request.values.get("CallSid", "default_session")
@@ -74,12 +65,6 @@ def handle_inquiry():
 
 @app.route("/handle_feedback", methods=['GET', 'POST'])
 def handle_feedback():
-    """
-    [NLU Intent Extraction] for feedback.
-    Processes feedback using Dialogflow. If the user's response matches one
-    of the six FAQ intents, the code redirects back to the inquiry handler.
-    Otherwise, it handles the satisfied, followup, unclear, or default feedback responses.
-    """
     resp = VoiceResponse()
     feedback = request.values.get('SpeechResult', '').strip()
     session_id = request.values.get("CallSid", "default_session")
