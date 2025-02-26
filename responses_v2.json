@@ -1,11 +1,11 @@
 {
-    "check_transfer_status": "Log into your Wise account and click 'Details' on your transfer to view its status.",
-    "money_arrival": "Wise provides an estimated arrival time when you initiate a transfer. If your money doesn't arrive by the expected time, it could be due to processing delays, bank holidays, incorrect recipient details, or currency conversion issues. You can also download a PDF receipt from your account for more details.",
-    "transfer_complete_but_money_pending": "Transfers are marked complete once Wise has sent the money to the recipient's bank, but additional processing time at the bank may delay the arrival of funds.",
-    "transfer_delay_reasons": "Delays may occur due to extra verification checks, bank processing times, the payment method used, or required security checks.",
-    "proof_of_payment": "A proof of payment is a receipt showing your transaction details, including your name, account number, transfer date, amount, currency, and reference number. Check your email or Wise account for this document.",
-    "banking_partner_reference": "It is a reference number provided to track your transfer when processed through a local banking partner, helping to identify and trace your transaction.",
-    "followup": "Could you please tell me more, or would you like to speak with a human agent?",
+    "check_transfer_status": "To check your transfer status, log into your Wise account and tap ‘Details’ on your transfer. Our tracker shows every step and most transfers complete within two hours. Delays may occur due to verification or bank processing.",
+    "money_arrival": "Your money is on its way! Wise gives an estimated arrival time with each transfer. Delays can occur due to bank processing, wrong recipient details, or weekend schedules. Check your PDF receipt for more information.",
+    "transfer_complete_but_money_pending": "Transfers are marked complete once Wise sends your money, but banks may delay processing. If your recipient hasn’t received the funds, it’s likely due to processing delays. Check your receipt for more details.",
+    "transfer_delay_reasons": "Transfers can be delayed for several reasons. Bank and Swift transfers may take two to five days, while card payments are usually faster. Currency conversion may also slow processing. Wise emails you the expected timing.",
+    "proof_of_payment": "A proof of payment is a receipt or screenshot showing your name, account and bank details, transfer date, amount, currency, and reference. Sometimes, two images or a bank statement is needed in Australia or New Zealand.",
+    "banking_partner_reference": "Wise provides a banking partner reference number for some transfers to track your money. This number may be required by the recipient’s bank. In some regions, it is known as a UTR or transaction reference.",
+    "followup": "Got it. Connecting you to a human agent, please hold on.",
     "satisfied": "I'm glad I could help! Thank you for calling Wise. Have a wonderful day!",
     "unclear": "I'm sorry, I didn't quite catch that. Could you please repeat or clarify?"
   }

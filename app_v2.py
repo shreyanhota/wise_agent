@@ -62,6 +62,7 @@ def handle_inquiry():
     
     # [User Feedback] prompt
     gather = Gather(input="speech", action="/handle_feedback", method="POST", timeout=5)
+    gather.params = {"LastResponse": reply}  # Store last response
     resp.say("How does that sound?", voice='alice', language='en-US')
     resp.append(gather)
     
@@ -80,16 +81,25 @@ def handle_feedback():
     query_result = detect_intent_texts(session_id, feedback)
     intent = query_result.intent.display_name.lower() if query_result.intent.display_name else ""
     
+    # Retrieve last response from previous inquiry
+    last_response = request.values.get("LastResponse", "I'm sorry, I didn't understand that.")
+
     if intent == "satisfied":
         resp.say(responses.get("satisfied"), voice='alice', language='en-US')
         resp.hangup()
-    elif intent in ["followup", "unclear"]:
-        resp.say(responses.get(intent), voice='alice', language='en-US')
+    elif intent == "followup":
+        resp.say(responses.get("followup"), voice='alice', language='en-US')
+        resp.hangup() # placeholder for human agent transfer
+    elif intent == "unclear":
+        # Repeat the last response before asking again
+        resp.say(f"{last_response}. Could you please clarify?", voice='alice', language='en-US')
         gather = Gather(input="speech", action="/handle_feedback", method="POST", timeout=5)
+        gather.params = {"LastResponse": last_response}  # Keep last response stored
         resp.append(gather)
     else:
         resp.say("I'm sorry, I didn't quite catch that. Could you please repeat or clarify?", voice='alice', language='en-US')
         gather = Gather(input="speech", action="/handle_feedback", method="POST", timeout=5)
+        gather.params = {"LastResponse": last_response}  # Keep last response stored
         resp.append(gather)
     
     return Response(str(resp), mimetype='text/xml')
