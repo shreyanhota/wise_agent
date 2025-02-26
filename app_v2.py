@@ -63,7 +63,7 @@ def handle_inquiry():
     if intent in faq_intents:
         reply = responses[intent]
         resp.say(reply, voice='alice', language='en-US')
-        resp.say("Did that answer your query?", voice='alice', language='en-US')
+        resp.say("Would you like to know more, or did that answer your query?", voice='alice', language='en-US')
     else:
         reply = responses[intent]
         resp.say(reply, voice='alice', language='en-US')
