@@ -7,6 +7,7 @@
     "banking_partner_reference": "Wise provides a banking partner reference number for some transfers to track your money. This number may be required by the recipient’s bank. In some regions, it is known as a UTR or transaction reference.",
     "followup": "Got it. Connecting you to a human agent, please hold on.",
     "satisfied": "I'm glad I could help! Thank you for calling Wise. Have a wonderful day!",
-    "unclear": "I'm sorry, I didn't quite catch that. Could you please repeat or clarify?"
+    "unclear": "I'm sorry, I didn't quite catch that. Could you please repeat or clarify?",
+    "show_options": "Here are your options: 'How can I check the status of my transfer?', 'When will my money arrive?', 'Why does it say my transfer's complete when the money hasn't arrived yet?', 'Why do some transfers take longer?', 'What is a proof of payment?', and 'What's a banking partner reference number?'"
   }
   

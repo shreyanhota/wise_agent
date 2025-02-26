@@ -32,7 +32,7 @@ def voice():
     """
     resp = VoiceResponse()
     gather = Gather(input="speech", action="/handle_inquiry", method="POST", timeout=5)
-    gather.say("Welcome to Wise Customer Support. How can I help you today?", voice='alice', language='en-US')
+    gather.say("Welcome to Wise Customer Support. How can I help you today? You can ask me for a list of options if you like.", voice='alice', language='en-US')
     resp.append(gather)
     resp.redirect("/voice")
     return Response(str(resp), mimetype='text/xml')
@@ -51,18 +51,16 @@ def handle_inquiry():
     query_result = detect_intent_texts(session_id, inquiry)
     intent = query_result.intent.display_name.lower() if query_result.intent.display_name else ""
     
-    # Check if the detected intent matches one of our FAQ topics (keys in responses.json)
     if intent in responses:
         reply = responses[intent]
     else:
-        # Fallback: use fulfillment text from Dialogflow or a default message
         reply = query_result.fulfillment_text if query_result.fulfillment_text else "I'm sorry, I didn't understand that. Could you please repeat?"
     
     resp.say(reply, voice='alice', language='en-US')
     
-    # [User Feedback] prompt
+    # Store the last response for possible repetition later.
     gather = Gather(input="speech", action="/handle_feedback", method="POST", timeout=5)
-    gather.params = {"LastResponse": reply}  # Store last response
+    gather.params = {"LastResponse": reply}
     resp.say("How does that sound?", voice='alice', language='en-US')
     resp.append(gather)
     
@@ -72,8 +70,9 @@ def handle_inquiry():
 def handle_feedback():
     """
     [NLU Intent Extraction] for feedback.
-    Processes feedback using Dialogflow to detect if the user is satisfied, wants followup,
-    or is unclear. Ends the call or re-prompts accordingly.
+    Processes feedback using Dialogflow. If the user's response matches one
+    of the six FAQ intents, the code redirects back to the inquiry handler.
+    Otherwise, it handles the satisfied, followup, unclear, or default feedback responses.
     """
     resp = VoiceResponse()
     feedback = request.values.get('SpeechResult', '').strip()
@@ -81,25 +80,43 @@ def handle_feedback():
     query_result = detect_intent_texts(session_id, feedback)
     intent = query_result.intent.display_name.lower() if query_result.intent.display_name else ""
     
-    # Retrieve last response from previous inquiry
-    last_response = request.values.get("LastResponse", "I'm sorry, I didn't understand that.")
-
+    # List of FAQ intents
+    faq_intents = [
+        "check_transfer_status", 
+        "money_arrival", 
+        "transfer_complete_but_money_pending", 
+        "transfer_delay_reasons", 
+        "proof_of_payment", 
+        "banking_partner_reference"
+    ]
+    
+    # If the feedback intent is one of the FAQ intents, redirect to inquiry handler.
+    if intent in faq_intents:
+        # Overwrite the SpeechResult parameter with the current feedback
+        # so that handle_inquiry processes this as a new inquiry.
+        request.values = request.values.copy()
+        request.values["SpeechResult"] = feedback
+        return handle_inquiry()
+    
+    # Otherwise, handle feedback intents.
     if intent == "satisfied":
         resp.say(responses.get("satisfied"), voice='alice', language='en-US')
         resp.hangup()
     elif intent == "followup":
         resp.say(responses.get("followup"), voice='alice', language='en-US')
-        resp.hangup() # placeholder for human agent transfer
+        gather = Gather(input="speech", action="/handle_feedback", method="POST", timeout=5)
+        gather.params = {"LastResponse": query_result.fulfillment_text}
+        resp.append(gather)
     elif intent == "unclear":
-        # Repeat the last response before asking again
+        last_response = request.values.get("LastResponse", "I'm sorry, I didn't understand that.")
         resp.say(f"{last_response}. Could you please clarify?", voice='alice', language='en-US')
         gather = Gather(input="speech", action="/handle_feedback", method="POST", timeout=5)
-        gather.params = {"LastResponse": last_response}  # Keep last response stored
+        gather.params = {"LastResponse": last_response}
         resp.append(gather)
     else:
         resp.say("I'm sorry, I didn't quite catch that. Could you please repeat or clarify?", voice='alice', language='en-US')
         gather = Gather(input="speech", action="/handle_feedback", method="POST", timeout=5)
-        gather.params = {"LastResponse": last_response}  # Keep last response stored
+        gather.params = {"LastResponse": query_result.fulfillment_text}
         resp.append(gather)
     
     return Response(str(resp), mimetype='text/xml')
