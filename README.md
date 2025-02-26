@@ -1,7 +1,13 @@
 # Wise Voice Agent
 
+Contact : Shreyan Hota (shreyanhota@gmail.com)
+
+## Note : 
+- The frontend is deployed on a separate web service (https://wise-agent-frontend.onrender.com/). In case it is inaccessible, please drop a mail to shreyanhota@gmail.com or reach out to me at +91 9777256250 and I will respool the servers.
+- Twilio API is in Trial Mode, once you receive call from the agent, please press any key to start the agent.
+
 ## Overview
-Wise Voice Agent is a voice-based customer support solution built with Twilio's Voice API, Dialogflow, Python Flask, and deployed on Render. It handles incoming calls, processes user queries through natural language understanding, and responds with pre-defined FAQ answers stored in a JSON file. The agent is designed to streamline customer support by quickly providing answers to frequently asked questions about money transfers.
+Wise Voice Agent is a voice-based customer support solution built with Twilio's Voice API, Dialogflow, Python Flask, and deployed on Render. It calls the provided number, processes user queries through natural language understanding, and responds with pre-defined FAQ answers stored in a JSON file. The agent is designed to streamline customer support by quickly providing answers to frequently asked questions about money transfers.
 
 ## Architecture
 - Twilio Voice API: Handles incoming calls, text-to-speech responses, and gathers caller input.
