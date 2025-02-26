@@ -119,12 +119,12 @@ def handle_feedback():
         resp.hangup()
     elif intent_display_name in ["followup", "clarification"]:
         # In a follow-up or clarification intent, use Dialogflow's fulfillment text
-        resp.say("I understand. " + fulfillment_text)
+        resp.say(fulfillment_text)
         # Re-prompt for further feedback.
         gather = Gather(input="speech", action="/handle_feedback", method="POST", timeout=5)
         resp.append(gather)
     else:
-        resp.say("I'm sorry, I didn't quite catch that. " + fulfillment_text)
+        resp.say(fulfillment_text)
         gather = Gather(input="speech", action="/handle_feedback", method="POST", timeout=5)
         resp.append(gather)
     return Response(str(resp), mimetype='text/xml')

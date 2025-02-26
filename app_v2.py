@@ -32,7 +32,7 @@ def voice():
     """
     resp = VoiceResponse()
     gather = Gather(input="speech", action="/handle_inquiry", method="POST", timeout=5)
-    gather.say("Welcome to Wise Customer Support. How can I help you today? You can ask me for a list of options if you like.", voice='alice', language='en-US')
+    gather.say("Welcome to Wise Customer Support. How can I help you today? You can ask me for a list of options.", voice='alice', language='en-US')
     resp.append(gather)
     resp.redirect("/voice")
     return Response(str(resp), mimetype='text/xml')
@@ -51,17 +51,26 @@ def handle_inquiry():
     query_result = detect_intent_texts(session_id, inquiry)
     intent = query_result.intent.display_name.lower() if query_result.intent.display_name else ""
     
-    if intent in responses:
+    reply = responses[intent]
+    faq_intents = [
+        "check_transfer_status", 
+        "money_arrival", 
+        "transfer_complete_but_money_pending", 
+        "transfer_delay_reasons", 
+        "proof_of_payment", 
+        "banking_partner_reference"
+    ]
+    if intent in faq_intents:
         reply = responses[intent]
+        resp.say(reply, voice='alice', language='en-US')
+        resp.say("Did that answer your query?", voice='alice', language='en-US')
     else:
-        reply = query_result.fulfillment_text if query_result.fulfillment_text else "I'm sorry, I didn't understand that. Could you please repeat?"
-    
-    resp.say(reply, voice='alice', language='en-US')
+        reply = responses[intent]
+        resp.say(reply, voice='alice', language='en-US')
     
     # Store the last response for possible repetition later.
     gather = Gather(input="speech", action="/handle_feedback", method="POST", timeout=5)
     gather.params = {"LastResponse": reply}
-    resp.say("How does that sound?", voice='alice', language='en-US')
     resp.append(gather)
     
     return Response(str(resp), mimetype='text/xml')
@@ -87,7 +96,8 @@ def handle_feedback():
         "transfer_complete_but_money_pending", 
         "transfer_delay_reasons", 
         "proof_of_payment", 
-        "banking_partner_reference"
+        "banking_partner_reference",
+        "check_options"
     ]
     
     # If the feedback intent is one of the FAQ intents, redirect to inquiry handler.
@@ -104,20 +114,16 @@ def handle_feedback():
         resp.hangup()
     elif intent == "followup":
         resp.say(responses.get("followup"), voice='alice', language='en-US')
-        gather = Gather(input="speech", action="/handle_feedback", method="POST", timeout=5)
-        gather.params = {"LastResponse": query_result.fulfillment_text}
-        resp.append(gather)
+        resp.hangup() # placeholder for call routing to human agent
     elif intent == "unclear":
         last_response = request.values.get("LastResponse", "I'm sorry, I didn't understand that.")
-        resp.say(f"{last_response}. Could you please clarify?", voice='alice', language='en-US')
+        resp.say(f"{last_response}. Was that audible?", voice='alice', language='en-US')
         gather = Gather(input="speech", action="/handle_feedback", method="POST", timeout=5)
         gather.params = {"LastResponse": last_response}
         resp.append(gather)
     else:
-        resp.say("I'm sorry, I didn't quite catch that. Could you please repeat or clarify?", voice='alice', language='en-US')
-        gather = Gather(input="speech", action="/handle_feedback", method="POST", timeout=5)
-        gather.params = {"LastResponse": query_result.fulfillment_text}
-        resp.append(gather)
+        resp.say("I'm sorry, I may not be able to answer that, connecting you to a human agent.", voice='alice', language='en-US')
+        resp.hangup() # placeholder for call routing to human agent
     
     return Response(str(resp), mimetype='text/xml')
 
